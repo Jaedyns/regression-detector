@@ -13,6 +13,7 @@ dependencies = [
 
 [project.scripts]
 classify = "detector.cli:main"
+validate-golden = "detector.golden:main"
 
 [build-system]
 requires = ["hatchling"]
