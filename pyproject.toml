@@ -23,6 +23,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/detector"]
 
+[tool.pytest.ini_options]
+markers = ["live: calls the Claude API (costs money); run with `pytest -m live`"]
+addopts = "-m 'not live'"
+
 [dependency-groups]
 dev = [
     "pytest>=9.2.0",
