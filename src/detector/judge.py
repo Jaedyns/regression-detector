@@ -2,6 +2,7 @@ import anthropic
 from pydantic import BaseModel
 
 from detector.classifier import Classification
+from detector.evaluators import CheckResult
 from detector.golden import GoldenCase
 
 # Pinned separately from prompts/: the grader must stay fixed while the classifier changes,
@@ -51,9 +52,7 @@ def judge_summary(email: str, summary: str, client: anthropic.Anthropic) -> Judg
     return response.parsed_output
 
 
-def check_unsupported_claims(case: GoldenCase, output: Classification, client: anthropic.Anthropic):
-    from detector.evaluators import CheckResult
-
+def check_unsupported_claims(case: GoldenCase, output: Classification, client: anthropic.Anthropic) -> CheckResult:
     verdict = judge_summary(case.email, output.summary, client)
     return CheckResult(
         name="no_unsupported_claims",
