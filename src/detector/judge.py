@@ -1,4 +1,8 @@
+import anthropic
 from pydantic import BaseModel
+
+from detector.classifier import Classification
+from detector.golden import GoldenCase
 
 # Pinned separately from prompts/: the grader must stay fixed while the classifier changes,
 # or a score shift could come from the judge instead of the prompt under test.
@@ -27,3 +31,32 @@ class JudgeVerdict(BaseModel):
 
 def judge_prompt(email: str, summary: str) -> str:
     return f"<email>\n{email}\n</email>\n\n<summary>\n{summary}\n</summary>"
+
+
+class JudgeRefused(Exception):
+    pass
+
+
+def judge_summary(email: str, summary: str, client: anthropic.Anthropic) -> JudgeVerdict:
+    response = client.messages.parse(
+        model=JUDGE_MODEL,
+        max_tokens=2048,
+        system=JUDGE_SYSTEM,
+        messages=[{"role": "user", "content": judge_prompt(email, summary)}],
+        output_config={"effort": JUDGE_EFFORT},
+        output_format=JudgeVerdict,
+    )
+    if response.stop_reason == "refusal":
+        raise JudgeRefused(getattr(response.stop_details, "explanation", None) or "refused")
+    return response.parsed_output
+
+
+def check_unsupported_claims(case: GoldenCase, output: Classification, client: anthropic.Anthropic):
+    from detector.evaluators import CheckResult
+
+    verdict = judge_summary(case.email, output.summary, client)
+    return CheckResult(
+        name="no_unsupported_claims",
+        passed=not verdict.unsupported_claims,
+        detail="; ".join(verdict.unsupported_claims),
+    )
