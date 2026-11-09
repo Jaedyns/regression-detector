@@ -51,7 +51,7 @@ def print_comparison(comparison: Comparison, baseline_version: str) -> None:
 def main() -> None:
     load_dotenv()
     parser = argparse.ArgumentParser(description="Evaluate a prompt version on the golden dataset and compare it to the baseline.")
-    parser.add_argument("--prompt", default="v1", help="Prompt version in prompts/ (default: v1)")
+    parser.add_argument("--prompt", help="Prompt version in prompts/ (default: the one in prompts/active.yaml)")
     parser.add_argument("--repeats", type=int, default=5, help="Runs per case, to average out non-determinism (default: 5)")
     parser.add_argument("--case", action="append", help="Only run this case id (repeatable)")
     parser.add_argument("--no-judge", action="store_true", help="Skip the LLM judge (faster, cheaper)")

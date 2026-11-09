@@ -13,7 +13,7 @@ def main() -> None:
     load_dotenv()
     parser = argparse.ArgumentParser(description="Classify one support email.")
     parser.add_argument("email", help="Email text, or - to read from stdin")
-    parser.add_argument("--prompt", default="v1", help="Prompt version in prompts/ (default: v1)")
+    parser.add_argument("--prompt", help="Prompt version in prompts/ (default: the one in prompts/active.yaml)")
     args = parser.parse_args()
 
     email = sys.stdin.read() if args.email == "-" else args.email

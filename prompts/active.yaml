@@ -1,0 +1,2 @@
+# The prompt version production uses. CI evaluates this version against baselines/baseline.json.
+version: v2

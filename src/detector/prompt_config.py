@@ -25,6 +25,11 @@ class PromptConfig(BaseModel):
     few_shot_examples: list[FewShotExample] = []
 
     @classmethod
-    def load(cls, version: str) -> "PromptConfig":
+    def load(cls, version: str | None = None) -> "PromptConfig":
+        version = version or active_version()
         path = PROMPTS_DIR / f"classifier_{version}.yaml"
         return cls.model_validate(yaml.safe_load(path.read_text()))
+
+
+def active_version() -> str:
+    return yaml.safe_load((PROMPTS_DIR / "active.yaml").read_text())["version"]
