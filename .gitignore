@@ -11,3 +11,6 @@ wheels/
 
 # Secrets
 .env
+
+# Local run history (baselines/ is committed instead)
+runs/
