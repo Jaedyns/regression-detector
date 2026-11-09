@@ -11,6 +11,7 @@ from detector.compare import Comparison, compare
 from detector.evaluate import CHECK_NAMES, CaseResult, run_suite
 from detector.golden import load_golden
 from detector.prompt_config import PromptConfig
+from detector.report import render_markdown
 from detector.stats import RunStats, summarize
 from detector.storage import load_run, save_run
 
@@ -56,6 +57,7 @@ def main() -> None:
     parser.add_argument("--case", action="append", help="Only run this case id (repeatable)")
     parser.add_argument("--no-judge", action="store_true", help="Skip the LLM judge (faster, cheaper)")
     parser.add_argument("--save-baseline", action="store_true", help="Make this run the new baseline")
+    parser.add_argument("--markdown", metavar="FILE", help="Also append a Markdown report to FILE (CI passes $GITHUB_STEP_SUMMARY)")
     args = parser.parse_args()
 
     if not os.environ.get("ANTHROPIC_API_KEY"):
@@ -87,13 +89,17 @@ def main() -> None:
         return
 
     baseline = load_baseline()
+    comparison = compare(baseline.stats, stats) if baseline else None
+    if args.markdown:
+        with open(args.markdown, "a") as f:
+            f.write(render_markdown(results, stats, baseline.stats if baseline else None, comparison))
+
     if baseline is None:
         print("\nNo baseline yet. Run again with --save-baseline to create one.")
         return
     if baseline.stats.repeats != args.repeats:
         print(f"\nNote: baseline used {baseline.stats.repeats} repeats, this run used {args.repeats}. "
               "Per-case changes are less reliable.")
-    comparison = compare(baseline.stats, stats)
     print_comparison(comparison, baseline.stats.prompt_version)
     if comparison.regressed:
         sys.exit(1)
