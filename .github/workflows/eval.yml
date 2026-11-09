@@ -1,0 +1,63 @@
+name: Model regression check
+
+# Each run calls Claude about 330 times, so it only runs when something that can change
+# model output (or how it's scored) changes.
+on:
+  pull_request:
+    paths:
+      - "prompts/**"
+      - "golden/**"
+      - "baselines/**"
+      - "src/**"
+      - "pyproject.toml"
+      - "uv.lock"
+  workflow_dispatch:
+
+# A new push to the same PR cancels the older, now-stale evaluation instead of paying for both.
+concurrency:
+  group: eval-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # `pull_request` (not `pull_request_target`) never exposes secrets to forks, so a fork PR
+      # lands here without a key. Skip with a warning rather than fail someone else's PR.
+      - name: Check for API key
+        id: key
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning::ANTHROPIC_API_KEY secret is not set, so the model evaluation was skipped."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: astral-sh/setup-uv@v6
+        if: steps.key.outputs.present == 'true'
+
+      - run: uv sync --locked
+        if: steps.key.outputs.present == 'true'
+
+      - name: Evaluate active prompt against the baseline
+        if: steps.key.outputs.present == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: uv run evaluate --markdown "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload every model output from this run
+        if: always() && steps.key.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-run-${{ github.run_id }}
+          path: runs/results.db
+          if-no-files-found: ignore
