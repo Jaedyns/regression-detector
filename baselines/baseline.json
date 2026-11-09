@@ -1,0 +1,218 @@
+{
+  "created_at": "2026-11-09T00:11:04+00:00",
+  "git_sha": "b0b0df6",
+  "run_id": 2,
+  "stats": {
+    "prompt_version": "v1",
+    "model": "claude-opus-5-5",
+    "repeats": 5,
+    "n_cases": 33,
+    "all_pass_rate": 0.9576,
+    "check_rates": {
+      "category": 0.9576,
+      "required_details": 1.0,
+      "format": 1.0,
+      "no_unsupported_claims": 1.0
+    },
+    "case_rates": {
+      "account-cancel-end-of-period": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "account-change-email": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "account-gdpr-deletion": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "account-make-admin": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "account-remove-member": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "account-transfer-ownership": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "account-unlock-user": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-annual-switch": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-nonprofit-pricing": {
+        "category": 0.8,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-refund-after-trial-cancel": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-unexplained-increase": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-update-card": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-vat-invoice": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "billing-wrong-seat-count": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "edge-angry-vague": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "edge-false-premise": {
+        "category": 0.8,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "edge-one-word": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "edge-prompt-injection": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "edge-spanish": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "edge-two-requests": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "general-competitor-comparison": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "general-keyboard-shortcuts": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "general-linux-roadmap": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "general-praise": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "general-soc2": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "general-webinars": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-invite-limit-reached": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-ios-crash": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-password-reset-email": {
+        "category": 0.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-rate-limit-misfire": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-slack-integration": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-slow-dashboard": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      },
+      "technical-webhook-502": {
+        "category": 1.0,
+        "required_details": 1.0,
+        "format": 1.0,
+        "no_unsupported_claims": 1.0
+      }
+    }
+  }
+}
