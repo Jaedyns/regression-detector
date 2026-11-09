@@ -4,7 +4,11 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
+from pydantic import BaseModel
+
+from detector.classifier import Classification
 from detector.evaluate import CaseResult
+from detector.evaluators import CheckResult
 
 DB_PATH = Path(__file__).resolve().parents[2] / "runs" / "results.db"
 
@@ -62,3 +66,39 @@ def save_run(results: list[CaseResult], prompt_version: str, model: str, repeats
              for r in results],
         )
     return run_id
+
+
+class StoredRun(BaseModel):
+    run_id: int
+    started_at: str
+    prompt_version: str
+    model: str
+    repeats: int
+    git_sha: str | None
+    results: list[CaseResult]
+
+
+def load_run(run_id: int, path: Path = DB_PATH) -> StoredRun | None:
+    with connect(path) as conn:
+        row = conn.execute(
+            "SELECT started_at, prompt_version, model, repeats, git_sha FROM runs WHERE id = ?", (run_id,)
+        ).fetchone()
+        if row is None:
+            return None
+        rows = conn.execute(
+            "SELECT case_id, repeat, category, summary, error, checks FROM results WHERE run_id = ? "
+            "ORDER BY repeat, case_id", (run_id,)
+        ).fetchall()
+    results = [
+        CaseResult(
+            case_id=case_id,
+            repeat=repeat,
+            output=Classification(category=category, summary=summary) if category is not None else None,
+            error=error,
+            checks=[CheckResult(**c) for c in json.loads(checks)],
+        )
+        for case_id, repeat, category, summary, error, checks in rows
+    ]
+    started_at, prompt_version, model, repeats, sha = row
+    return StoredRun(run_id=run_id, started_at=started_at, prompt_version=prompt_version,
+                     model=model, repeats=repeats, git_sha=sha, results=results)
