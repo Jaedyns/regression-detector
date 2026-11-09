@@ -12,7 +12,7 @@ from detector.evaluate import CHECK_NAMES, CaseResult, run_suite
 from detector.golden import load_golden
 from detector.prompt_config import PromptConfig
 from detector.stats import RunStats, summarize
-from detector.storage import save_run
+from detector.storage import load_run, save_run
 
 
 def print_report(results: list[CaseResult], stats: RunStats) -> None:
@@ -97,3 +97,28 @@ def main() -> None:
     print_comparison(comparison, baseline.stats.prompt_version)
     if comparison.regressed:
         sys.exit(1)
+
+
+def promote_main() -> None:
+    parser = argparse.ArgumentParser(description="Make a stored run the baseline, without re-running it.")
+    parser.add_argument("run_id", type=int, help="Run id printed by `evaluate` (stored in runs/results.db)")
+    args = parser.parse_args()
+
+    run = load_run(args.run_id)
+    if run is None:
+        sys.exit(f"No run {args.run_id} in runs/results.db")
+
+    stats = summarize(run.results, run.prompt_version, run.model, run.repeats)
+    golden_ids = {c.id for c in load_golden()}
+    missing = golden_ids - stats.case_rates.keys()
+    if missing:
+        sys.exit(f"Run {run.run_id} skipped {len(missing)} golden cases. A baseline must cover the whole dataset.")
+    if "no_unsupported_claims" not in stats.check_rates:
+        sys.exit(f"Run {run.run_id} ran without the judge. A baseline must include it.")
+
+    previous = load_baseline()
+    save_baseline(stats, run.run_id, sha=run.git_sha)
+    old = f"prompt {previous.stats.prompt_version} ({previous.stats.all_pass_rate:.0%})" if previous else "none"
+    print(f"Baseline was: {old}")
+    print(f"Baseline now: prompt {run.prompt_version} ({stats.all_pass_rate:.0%}), run {run.run_id} "
+          f"from {run.started_at} at commit {run.git_sha}")

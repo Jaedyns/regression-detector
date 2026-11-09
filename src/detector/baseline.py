@@ -16,10 +16,11 @@ class Baseline(BaseModel):
     stats: RunStats
 
 
-def save_baseline(stats: RunStats, run_id: int | None, path: Path = BASELINE_PATH) -> Baseline:
+def save_baseline(stats: RunStats, run_id: int | None, sha: str | None = None,
+                  path: Path = BASELINE_PATH) -> Baseline:
     baseline = Baseline(
         created_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        git_sha=git_sha(),
+        git_sha=sha or git_sha(),
         run_id=run_id,
         stats=stats,
     )

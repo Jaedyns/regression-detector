@@ -15,6 +15,7 @@ dependencies = [
 classify = "detector.cli:main"
 validate-golden = "detector.golden:main"
 evaluate = "detector.evaluate_cli:main"
+promote-run = "detector.evaluate_cli:promote_main"
 
 [build-system]
 requires = ["hatchling"]
